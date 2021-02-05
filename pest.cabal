@@ -1,0 +1,40 @@
+cabal-version:       3.0
+name:                pest
+version:             0.1.0.0
+synopsis:
+  Pure Eager Serialisable Thunks
+-- description:
+-- bug-reports:
+license:
+  Apache-2.0
+license-file:        LICENSE
+author:              Nicholas Clarke
+maintainer:          nick@topos.org.uk
+copyright:           IOG
+-- category:
+build-type:          Simple
+extra-source-files:  CHANGELOG.md
+
+library
+  default-language:    Haskell2010
+  hs-source-dirs:      lib
+  exposed-modules:
+    Control.Pest.Par
+  -- other-modules:
+  build-depends:
+    base >=4.14 && <4.15,
+    nothunks,
+    parallel,
+    serialise
+
+executable examples
+  default-language:    Haskell2010
+  hs-source-dirs:      examples
+  main-is:             Main.hs
+  ghc-options:
+    -threaded
+    -rtsopts
+  build-depends:
+    base >=4.14 && <4.15,
+    cborg,
+    pest
