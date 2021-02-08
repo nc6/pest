@@ -23,19 +23,19 @@ module Control.Pest.Par
   )
 where
 
-import Codec.Serialise (Serialise (decode, encode))
-import Codec.Serialise.Decoding
+import Codec.CBOR.Decoding
   ( Decoder,
     decodeListLenOf,
     decodeWord64,
     decodeWord8,
   )
-import Codec.Serialise.Encoding
+import Codec.CBOR.Encoding
   ( Encoding,
     encodeListLen,
     encodeWord64,
     encodeWord8,
   )
+import Codec.Serialise (Serialise (decode, encode))
 import Control.Parallel (par)
 import GHC.Fingerprint.Type (Fingerprint (..))
 import GHC.IO.Unsafe (unsafePerformIO)
@@ -60,6 +60,7 @@ data PEST value args = PEST
     value :: WrappedValue value
   }
 
+-- | Create a PEST, given a function to compute and its arguments.
 pest :: StaticPtr (args -> value) -> args -> PEST value args
 pest fun args =
   let v = deRefStaticPtr fun args
@@ -70,6 +71,10 @@ pest fun args =
             value = WrappedValue v
           }
 
+-- | Extract the value from a PEST.
+--
+--   This does not force the evaluation of the value, but obviously any use will
+--   do so.
 unPest :: PEST value args -> value
 unPest = unWrappedValue . value
 
