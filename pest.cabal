@@ -23,7 +23,7 @@ library
   -- other-modules:
   build-depends:
     base >=4.14 && <4.15,
-    cborg,
+    cborg >= 0.2.0.0,
     nothunks,
     parallel,
     serialise

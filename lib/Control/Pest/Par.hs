@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE RankNTypes #-}
@@ -38,6 +39,7 @@ import Codec.CBOR.Encoding
 import Codec.Serialise (Serialise (decode, encode))
 import Control.Parallel (par)
 import GHC.Fingerprint.Type (Fingerprint (..))
+import GHC.Generics (Generic)
 import GHC.IO.Unsafe (unsafePerformIO)
 import GHC.StaticPtr
   ( StaticPtr,
@@ -46,7 +48,8 @@ import GHC.StaticPtr
     unsafeLookupStaticPtr,
   )
 import NoThunks.Class
-  ( NoThunks,
+  ( AllowThunksIn (..),
+    NoThunks,
     OnlyCheckWhnfNamed (..),
     unsafeNoThunks,
   )
@@ -59,6 +62,8 @@ data PEST value args = PEST
     -- needed
     value :: WrappedValue value
   }
+  deriving (Generic)
+  deriving (NoThunks) via AllowThunksIn '["fun", "value"] (PEST value args)
 
 -- | Create a PEST, given a function to compute and its arguments.
 pest :: StaticPtr (args -> value) -> args -> PEST value args
